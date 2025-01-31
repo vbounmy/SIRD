@@ -60,7 +60,7 @@ def grid_search(step, duration, ground_truth):
     mus = numpy.linspace(0.005, 0.015, 3)
 
     best_beta, best_gamma, best_mu = None, None, None
-    best_mse = float("inf")
+    best_mse, best_mse_susceptible_to_be_infected, best_mse_infected, best_mse_recovered, best_mse_deceased = float("inf"), float("inf"), float("inf"), float("inf"), float("inf")
 
     for beta, gamma, mu in product(betas, gammas, mus):
         time, susceptible_to_be_infected, infected, recovered, deceased = sird_forecast(beta, gamma, mu, step, duration)
@@ -71,10 +71,14 @@ def grid_search(step, duration, ground_truth):
         actual_mse = mse_susceptible_to_be_infected + mse_infected + mse_recovered + mse_deceased
 
         if actual_mse < best_mse:
-            best_mse = actual_mse
+            best_mse, best_mse_susceptible_to_be_infected, best_mse_infected, best_mse_recovered, best_mse_deceased = actual_mse, mse_susceptible_to_be_infected, mse_infected, mse_recovered, mse_deceased
             best_beta, best_gamma, best_mu = beta, gamma, mu
     
-    print(f"best MSE = {best_mse}")
+    print(f"best global MSE = {best_mse}")
+    print(f"best 'Susceptible to be infected' MSE = {best_mse_susceptible_to_be_infected}")
+    print(f"best 'Infected' MSE = {best_mse_infected}")
+    print(f"best 'Recovered' MSE = {best_mse_recovered}")
+    print(f"best 'Deceased' MSE = {best_mse_deceased}")
     print(f"best beta = {best_beta}, best gamma = {best_gamma}, best_mu = {best_mu}")
     time, susceptible_to_be_infected, infected, recovered, deceased = sird_forecast(best_beta, best_gamma, best_mu, step, duration)
     plot_data(time, susceptible_to_be_infected, infected, recovered, deceased, ground_truth)

@@ -56,7 +56,7 @@ def plot_data(time, susceptible_to_be_infected, infected, recovered, deceased, g
 
 def grid_search(step, duration, ground_truth):
     betas = numpy.linspace(0.25, 0.5, 3)
-    gammas = numpy.linspace(0.03, 0.15, 3)
+    gammas = numpy.linspace(0.08, 0.15, 3)
     mus = numpy.linspace(0.005, 0.015, 3)
 
     best_beta, best_gamma, best_mu = None, None, None
@@ -74,6 +74,7 @@ def grid_search(step, duration, ground_truth):
             best_mse = actual_mse
             best_beta, best_gamma, best_mu = beta, gamma, mu
     
+    print(f"best MSE = {best_mse}")
     print(f"best beta = {best_beta}, best gamma = {best_gamma}, best_mu = {best_mu}")
     time, susceptible_to_be_infected, infected, recovered, deceased = sird_forecast(best_beta, best_gamma, best_mu, step, duration)
     plot_data(time, susceptible_to_be_infected, infected, recovered, deceased, ground_truth)
